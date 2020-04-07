@@ -1,13 +1,22 @@
-#pragma once
-
-#include <fstream>
 #include <string>
 #include <bitset>
 #include <math.h>
 
+#ifndef CODING_ALGORITHMS
+#define CODING_ALGORITHMS
+
 #include "../coders/LZ77Coder.cpp"
-#include "../coders/ShannonFanoCoder.cpp"
 #include "../coders/LZWCoder.cpp"
+#include "../coders/ShannonFanoCoder.cpp"
+
+#endif
+
+#ifndef FILE_CONVERTER
+#define FILE_CONVERTER
+
+#include "Converter.cpp"
+
+#endif
 
 
 class Unpacker {
@@ -19,34 +28,25 @@ public:
 
 
     LZWCoder::Result readLZWResult() {
-        std::string bits = readOrigin();
+        CharSequence bits = readOrigin();
         assert(bits.size() > 0);
 
-        int N = 8;
-        int WORD_NUMBER = 32;
-        int CHARACTER_BITS = 8;
-        int M = 32;
-        int CODES_BITS_PRESENT = 32;
-
-        int mapSize = unpackBits(bits, 0, N);
-        std::map<int, std::string> dictionary;
-        int pointer = N;
+        int mapSize = unpackBits(bits, 0, constants::DICTIONARY_SIZE_LZW) + 1;
+        std::map<int, CharSequence> dictionary;
+        int pointer = constants::DICTIONARY_SIZE_LZW;
         for (int numberOfItemsInMap = 0; numberOfItemsInMap < mapSize; ++numberOfItemsInMap) {
-            int wordNumber = unpackBits(bits, pointer, WORD_NUMBER);
-            char character = unpackBits(bits, pointer + WORD_NUMBER, CHARACTER_BITS);
-
-            dictionary[wordNumber] = character;
-
-            pointer += WORD_NUMBER + CHARACTER_BITS;
+            char character = unpackBits(bits, pointer, constants::CHARACTER_BITS_LZW);
+            dictionary[numberOfItemsInMap + 1] = CharSequence{character};
+            pointer += constants::CHARACTER_BITS_LZW;
         }
 
-        int codesSize = unpackBits(bits, pointer, M);
+        int codesSize = unpackBits(bits, pointer, constants::NUMBER_OF_CODES_LZW);
         std::vector<int> codes(codesSize);
-        pointer += M;
+        pointer += constants::NUMBER_OF_CODES_LZW;
 
         for (int numberOfCodes = 0; numberOfCodes < codesSize; ++numberOfCodes) {
-            codes[numberOfCodes] = unpackBits(bits, pointer, CODES_BITS_PRESENT);
-            pointer += CODES_BITS_PRESENT;
+            codes[numberOfCodes] = unpackBits(bits, pointer, constants::CODES_BITS_PRESENT_LZW);
+            pointer += constants::CODES_BITS_PRESENT_LZW;
         }
 
         return LZWCoder::Result(dictionary, codes);
@@ -54,34 +54,29 @@ public:
 
 
     ShannonFanoCoder::Result readShannonFanoResult() {
-        std::string bits = readOrigin();
+        CharSequence bits = readOrigin();
         assert(bits.size() > 0);
 
-        // TODO: Перенести константы
-        int N = 8;
-        int CHAR_LENGTH_BITS = 8;
-        int CODES_LENGTH_BITS = 32;
-        int TOTAL_CODE_LENGTH_BITS = 32;
-
-        int mapSize = unpackBits(bits, 0, N);
+        int mapSize = unpackBits(bits, 0, constants::NUMBER_OF_CODES_SF) + 1;
         std::vector<char> values(mapSize);
-        std::vector<std::string> codes(mapSize);
+        std::vector<CharSequence> codes(mapSize);
 
-        int pointer = N;
+        int pointer = constants::NUMBER_OF_CODES_SF;
         for (int numberOfItemsInMap = 0; numberOfItemsInMap < mapSize; ++numberOfItemsInMap) {
-            char character = unpackBits(bits, pointer, CHAR_LENGTH_BITS);
-            int codesLength = unpackBits(bits, pointer + CHAR_LENGTH_BITS, CODES_LENGTH_BITS);
-            std::string code = bits.substr(pointer + CHAR_LENGTH_BITS + CODES_LENGTH_BITS, codesLength);
+            char character = unpackBits(bits, pointer, constants::CHAR_LENGTH_BITS_SF);
+            int codesLength = unpackBits(bits, pointer + constants::CHAR_LENGTH_BITS_SF, constants::CODES_LENGTH_BITS_SF);
+            CharSequence code = utils::subsequence(bits, pointer + constants::CHAR_LENGTH_BITS_SF +
+                                                   constants::CODES_LENGTH_BITS_SF, codesLength);
 
             values[numberOfItemsInMap] = character;
             codes[numberOfItemsInMap] = code;
 
-            pointer += CHAR_LENGTH_BITS + CODES_LENGTH_BITS + codesLength;
+            pointer += constants::CHAR_LENGTH_BITS_SF + constants::CODES_LENGTH_BITS_SF + codesLength;
         }
 
-        int totalCodeLength = unpackBits(bits, pointer, TOTAL_CODE_LENGTH_BITS);
-        pointer += TOTAL_CODE_LENGTH_BITS;
-        std::string code = bits.substr(pointer, totalCodeLength);
+        int totalCodeLength = unpackBits(bits, pointer, constants::TOTAL_CODE_LENGTH_BITS_SF);
+        pointer += constants::TOTAL_CODE_LENGTH_BITS_SF;
+        CharSequence code = utils::subsequence(bits, pointer, totalCodeLength);
 
         return ShannonFanoCoder::Result(values, codes, code);
     }
@@ -94,19 +89,24 @@ public:
      * @return An array with triples, which are used in LZ77 algorithm to save the result of coding.
      */
     std::vector<LZ77Coder::Triple> readTriples(int charsInDictionary, int charsInBuffer) {
-        std::string bits = readOrigin();
+        CharSequence bits = readOrigin();
         assert(bits.size() > 0);
 
         int numberOfBitsForOffset = static_cast<int>(ceil(log2(charsInDictionary)));
         int numberOfBitsForLength = static_cast<int>(ceil(log2(charsInBuffer)));
-        int step = numberOfBitsForLength + numberOfBitsForOffset + 8;
+        if (utils::isPowerOfTwo(charsInBuffer))
+            numberOfBitsForLength++;
+
+        int step = numberOfBitsForLength + numberOfBitsForOffset + constants::BITS_PER_CHARACTER_LZ77;
 
         int bitsSize = static_cast<int>(bits.size());
         std::vector<LZ77Coder::Triple> encodedInfo;
         for (int index = 0; index + numberOfBitsForLength + numberOfBitsForOffset < bitsSize; index += step) {
             int unpackedOffset = unpackBits(bits, index, numberOfBitsForOffset);
             int unpackedLength = unpackBits(bits, index + numberOfBitsForOffset, numberOfBitsForLength);
-            int unpackedCharacter = unpackBits(bits, index + numberOfBitsForLength + numberOfBitsForOffset, 8);
+            unpackedOffset = unpackedOffset == 0 && unpackedLength == 0 ? unpackedOffset : unpackedOffset + 1;
+            int unpackedCharacter = unpackBits(bits, index + numberOfBitsForLength +
+                                               numberOfBitsForOffset, constants::BITS_PER_CHARACTER_LZ77);
 
             encodedInfo.push_back(LZ77Coder::Triple(unpackedOffset, unpackedLength, unpackedCharacter));
         }
@@ -116,7 +116,6 @@ public:
 
 
 private:
-    typedef unsigned char byte;
 
 
     std::string sourceFileName;
@@ -126,25 +125,25 @@ private:
      * Read a content of a binary file.
      * @return String with data from a binary file.
      */
-    std::string readOrigin() {
-        std::string input = "";
-        byte nextByte;
-        std::ifstream in(sourceFileName,std::ios::binary);
+    CharSequence readOrigin() {
+        CharSequence chars = Converter::getInstance().readBinaryFile(sourceFileName);
+        CharSequence input;
 
-        while (in.read((char *) &nextByte, sizeof(nextByte))) {
-            std::bitset<sizeof(byte) * CHAR_BIT> bitset(nextByte);
-            input += bitset.to_string();
+        for (const char& byte: chars) {
+            std::bitset<sizeof(byte) * CHAR_BIT> bitset(byte);
+            std::string bitsStr = bitset.to_string();
+
+            input.insert(input.end(), bitsStr.begin(), bitsStr.end());
         }
 
-        in.close();
         return input;
     }
 
 
     /**
-     * Converts given binary string into integer.
+     * Converts given binary sequence into integer.
      */
-    int unpackBits(const std::string& bits, int start, int length) {
+    int unpackBits(const CharSequence& bits, int start, int length) {
         int value = 0;
 
         for (int index = length - 1; index >= 0; --index) {

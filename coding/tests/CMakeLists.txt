@@ -6,6 +6,7 @@ add_executable(tests
     # array tests
     packing_test.cpp
     coders_test.cpp
+    special_tests.cpp
     # packers sources
     ../src/common/Packer.cpp
     ../src/common/Unpacker.cpp

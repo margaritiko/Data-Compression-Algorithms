@@ -1,19 +1,23 @@
-#pragma once
-
-#include <iostream>
 #include <vector>
 #include <memory>
 #include <map>
 #include <algorithm>
 
-/*
+#ifndef COMMON_DECLARATIONS
+#define COMMON_DECLARATIONS
+
+#include "../common/declarations.cpp"
+
+#endif
+
+/**
 Class which provides methods for coding/encoding data with Shannon-Fano algorithm.
 */
 class ShannonFanoCoder {
 public:
 
     struct Result {
-        Result(std::vector<char>& values, std::vector<std::string>& codes, std::string& codedData) {
+        Result(CharSequence& values, std::vector<CharSequence>& codes, CharSequence& codedData) {
             assert(values.size() == codes.size());
             assert(codedData.size() > 0);
 
@@ -22,35 +26,36 @@ public:
             this->codedData = codedData;
         }
 
-        std::vector<char> values;
-        std::vector<std::string> codes;
-        std::string codedData;
+        CharSequence values;
+        std::vector<CharSequence> codes;
+        CharSequence codedData;
 
-        std::map<char, std::string> asMap() {
+        std::map<char, CharSequence> asMap() {
             return Result::map(values, codes);
         }
 
-        static std::map<char, std::string> map(std::vector<char> values, std::vector<std::string> codes) {
-            std::map<char, std::string> map;
+        static std::map<char, CharSequence> map(const CharSequence& values, const std::vector<CharSequence>& codes) {
+            std::map<char, CharSequence> codedMap;
             int numberOfValues = static_cast<int>(values.size());
             for (int index = 0; index < numberOfValues; ++index)
-                map[values[index]] = codes[index];
+                codedMap[values[index]] = codes[index];
 
-            return map;
+            return codedMap;
         }
     };
 
     class Node {
     public:
         /* Only for creating the root of a total tree. */
-        Node(): left(nullptr), right(nullptr), flag(false) {}
-        Node(char code): left(nullptr), right(nullptr), flag(false) {}
+        Node(): left(nullptr), right(nullptr) {}
+        Node(char code): left(nullptr), right(nullptr) {}
 
         /* Value which is associated with node only if this node is the end of some word. */
         char value;
 
-        /* `True` if node contains a value, `false` otherwise. */
-        bool flag;
+        bool isLeaf() {
+            return left == nullptr && right == nullptr;
+        }
 
         // `0` if left direction has been chosen, `1` otherwise
         std::shared_ptr<Node> left;
@@ -58,7 +63,7 @@ public:
     };
 
 
-    ShannonFanoCoder(std::string data) {
+    ShannonFanoCoder(CharSequence data) {
         std::map<char, int> counter;
         for (char character: data)
             counter[character] += 1;
@@ -72,7 +77,7 @@ public:
 
         sort(tmp.rbegin(), tmp.rend());
 
-        this->values = std::vector<char>(totalSize);
+        this->values = CharSequence(totalSize);
         this->numberOfMatches = std::vector<int>(totalSize);
 
         for (int index = 0; index < totalSize; ++index) {
@@ -81,46 +86,46 @@ public:
         }
 
         int numberOfItems = static_cast<int>(numberOfMatches.size());
-        bitCodes = std::vector<std::string>(numberOfItems, "");
+        bitCodes = std::vector<CharSequence>(numberOfItems, CharSequence{});
     }
 
 
-    ShannonFanoCoder(std::vector<char>& values, std::vector<int>& numberOfMatches) {
+    ShannonFanoCoder(CharSequence& values, std::vector<int>& numberOfMatches) {
         this->values = values;
         this->numberOfMatches = numberOfMatches;
 
         int numberOfItems = static_cast<int>(numberOfMatches.size());
-        bitCodes = std::vector<std::string>(numberOfItems, "");
+        bitCodes = std::vector<CharSequence>(numberOfItems, CharSequence{});
     }
 
-    /*
+    /**
     * As a result returns a binary tree with codes in not leaf nodes and values in the leafs.
     * Also fills an array with bitCodes.
     */
-    Result code(const std::string& data) {
+    Result code(const CharSequence& data) {
         int numberOfItems = static_cast<int>(numberOfMatches.size());
         build(0, numberOfItems - 1);
 
-        std::string codedData = "";
-        std::map<char, std::string> map = Result::map(values, bitCodes);
+        CharSequence codedData;
+        std::map<char, CharSequence> map = Result::map(values, bitCodes);
         for (const char& character: data)
-            codedData += map[character];
+            codedData.insert(codedData.end(), map[character].begin(), map[character].end());
 
         return Result(values, bitCodes, codedData);
     }
 
 
     /**
-     * Encodes a string from given binary tree with codes.
+     * Encodes a char sequence from given binary tree with codes.
      */
-    std::string encode(const std::string& code, const std::shared_ptr<Node> tree) {
-        std::string encodedData = "";
+    static CharSequence encodeSequence(const CharSequence& code, const std::shared_ptr<Node> tree) {
+        CharSequence encodedData;
         std::shared_ptr<Node> positionInTree = tree;
 
         for (int indexOfPointer = 0; indexOfPointer <= static_cast<int>(code.size()); ++indexOfPointer) {
-            if (positionInTree.get()->flag) {
+            if (positionInTree.get()->isLeaf()) {
                 /// Updates encodedData variable which contains current result with new node's value.
-                encodedData += positionInTree.get()->value;
+                encodedData.push_back(positionInTree.get()->value);
                 positionInTree = tree;
 
                 indexOfPointer--;
@@ -136,11 +141,15 @@ public:
         return encodedData;
     }
 
+    CharSequence encode(const CharSequence& code, const std::shared_ptr<Node> tree) {
+        return encodeSequence(code, tree);
+    }
 
-    std::shared_ptr<Node> makeTree(const std::map<char, std::string>& map) {
+
+    static std::shared_ptr<Node> makeTree(const std::map<char, CharSequence>& map) {
         std::shared_ptr<Node> root = std::shared_ptr<Node>(new Node());
 
-        for (const std::pair<char, std::string>& item: map) {
+        for (const std::pair<char, CharSequence>& item: map) {
             std::shared_ptr<Node> pointer = root;
             for (char bit: item.second) {
                 if (bit == '0') {
@@ -155,7 +164,6 @@ public:
             }
 
             pointer.get()->value = item.first;
-            pointer.get()->flag = true;
         }
 
         return root;
@@ -185,15 +193,15 @@ private:
 
         /// Updates codes.
         for (int index = start; index <= middle; ++index)
-            bitCodes[index] += "0";
+            bitCodes[index].push_back('0');
         for (int index = middle + 1; index <= end; ++index)
-            bitCodes[index] += "1";
+            bitCodes[index].push_back('1');
 
         build(start, middle);
         build(middle + 1, end);
     }
 
-    std::vector<char> values;
+    CharSequence values;
     std::vector<int> numberOfMatches;
-    std::vector<std::string> bitCodes;
+    std::vector<CharSequence> bitCodes;
 };

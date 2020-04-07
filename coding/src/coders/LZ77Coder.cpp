@@ -1,13 +1,20 @@
-#pragma once
-
-#include <iostream>
 #include <vector>
 #include <memory>
 
+#ifndef COMMON_DECLARATIONS
+#define COMMON_DECLARATIONS
+
+#include "../common/declarations.cpp"
+
+#endif
+
+/**
+Class which provides methods for coding/encoding data with LZ77 algorithm.
+*/
 class LZ77Coder {
 
 public:
-    /*
+    /**
     * `Triple` struct contains offset, which is calculated from the right to the left, 
     * length of an equal part and the first one chracter, which is different.
     */
@@ -29,7 +36,7 @@ public:
         }
     };
 
-    /*
+    /**
     * Creates a new instance of LZ77 coder with given dictionary's and window's sizes.
     */
     LZ77Coder(int dictSize, int windowSize) {
@@ -40,34 +47,34 @@ public:
     /**
     * Encodes given code, which was generated with LZ77 algorithm.
     */
-    std::string encode(const std::vector<Triple>& input) {
-        std::string encodedString = "";
+    CharSequence encode(const std::vector<Triple>& input) {
+        CharSequence encoded;
         int pointer = 0;
 
         for (Triple triple: input) {
             for (size_t index = pointer -  triple.offset; index < pointer - triple.offset + triple.length; ++index)
-                encodedString += std::string(1, encodedString[index]);
+                encoded.push_back(encoded[index]);
 
             pointer += triple.length + 1;
-            encodedString += std::string(1, triple.character);
+            encoded.push_back(triple.character);
         }
 
-        return encodedString;
+        return encoded;
     }
 
     /**
-    * Code given string with LZ77 algorithm.
+    * Code given char sequence with LZ77 algorithm.
     */
-    std::vector<Triple> code(const std::string& data) {
+    std::vector<Triple> code(const CharSequence& data) {
         std::vector<Triple> coded;
-        coded.reserve(data.size());
+        int dataSize = static_cast<int>(data.size());
+        coded.reserve(dataSize);
 
         int dictLeftBorder = -dictSize;
         int dictRightBorder = -1;
         int bufferLeftBorder = 0;
         int bufferRightBorder = windowSize - dictSize - 1;
 
-        int dataSize = static_cast<int>(data.size());
         while (bufferLeftBorder < dataSize) {
 
             int possibleStart = dictLeftBorder;
@@ -85,6 +92,11 @@ public:
                     secondIndex++;
                 }
 
+                if (secondIndex >= bufferRightBorder) {
+                    secondIndex--;
+                    firstIndex--;
+                }
+
                 int newLength = firstIndex - possibleStart;
                 if (newLength > bestLength) {
                     bestLength = newLength;
@@ -100,23 +112,15 @@ public:
             dictRightBorder += bestLength + 1;
             bufferLeftBorder += bestLength + 1;
             bufferRightBorder += bestLength + 1;
+
+            dictRightBorder = std::min(dictRightBorder, dataSize - 1);
+            bufferRightBorder = std::min(bufferRightBorder, dataSize - 1);
         }
 
         return coded;
     }
 
 private:
-
-    /// Calculations for possible sizes:
-    ///
-    /// 5 * 1024 = 5 * 2**10 and 4 * 1024 = 2**12
-    /// TOTAL: 13 + 12 + 8 = 33
-    ///
-    /// 10 * 1024 = 5 * 2**11 and 8 * 1024 = 2**13
-    /// TOTAL: 14 + 13 + 8 = 35
-    ///
-    /// 20 * 1024 = 5 * 2**12 and 16 * 1024 = 2**14
-    /// TOTAL: 15 + 14 + 8 = 37
 
     /* Size of a dictionary in number of characters. */
     int dictSize;

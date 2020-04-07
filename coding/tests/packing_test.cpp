@@ -3,18 +3,21 @@
 #include "common/Packer.cpp"
 #include "common/Unpacker.cpp"
 
+const std::string outputFileName = "../../tests/files/coding.txt";
+
 /**
  * Testing packing and unpacking the result of coding with ShannonFano.
  */
 TEST(ShannonFanoPacking, ShannonFanoPacking_1) {
-    std::string sourceFileName = "../../tests/files/shannon_fano_test.txt";
-    Packer* packer = new Packer(sourceFileName);
-    Unpacker* unpacker = new Unpacker(sourceFileName);
+    Packer* packer = new Packer(outputFileName);
+    Unpacker* unpacker = new Unpacker(outputFileName);
 
     std::string testString = "Мальчик Финн и собака Джейк живут в доме на дереве, "
                              "расположенном рядом с Конфетным Королевством в Землях Ооо.";
-    ShannonFanoCoder* coder = new ShannonFanoCoder(testString);
-    ShannonFanoCoder::Result result = coder->code(testString);
+    CharSequence source(testString.begin(), testString.end());
+
+    ShannonFanoCoder* coder = new ShannonFanoCoder(source);
+    ShannonFanoCoder::Result result = coder->code(source);
 
     packer->writeShannonFanoResult(result);
     ShannonFanoCoder::Result unpackedResult = unpacker->readShannonFanoResult();
@@ -23,8 +26,8 @@ TEST(ShannonFanoPacking, ShannonFanoPacking_1) {
     EXPECT_EQ(result.values.size(), unpackedResult.values.size());
     EXPECT_EQ(result.codes.size(), unpackedResult.codes.size());
 
-    std::map<char, std::string> mapBefore = result.asMap();
-    std::map<char, std::string> mapAfter = unpackedResult.asMap();
+    std::map<char, CharSequence> mapBefore = result.asMap();
+    std::map<char, CharSequence> mapAfter = unpackedResult.asMap();
     auto condition = [] (decltype(*mapBefore.begin()) a, decltype(a) b)
     { return a.first == b.first; };
     ASSERT_TRUE(std::equal(mapBefore.begin(), mapBefore.end(), mapAfter.begin(), condition));
@@ -37,15 +40,14 @@ TEST(ShannonFanoPacking, ShannonFanoPacking_1) {
  * Testing packing and unpacking the result of coding with LZ77.
  */
 TEST(LZ77Packing, LZ77Packing_1) {
-    std::string sourceFileName = "../../tests/files/lz77_test.txt";
-    Packer* packer = new Packer(sourceFileName);
-    Unpacker* unpacker = new Unpacker(sourceFileName);
+    Packer* packer = new Packer(outputFileName);
+    Unpacker* unpacker = new Unpacker(outputFileName);
 
     int dictSize = 5 * 1024;
     int windowSize = 9 * 1024;
 
     LZ77Coder* coder = new LZ77Coder(dictSize, windowSize);
-    std::string data = "sss dddd акк ивет#";
+    CharSequence data{'s', 's', 's', 'd', 'd', 'd', 'd', '#'};
     std::vector<LZ77Coder::Triple> codedInfo = coder->code(data);
 
     packer->writeTriples(codedInfo, dictSize, windowSize - dictSize);
@@ -63,12 +65,11 @@ TEST(LZ77Packing, LZ77Packing_1) {
  * Testing packing and unpacking the result of coding with LZW.
  */
 TEST(LZWPacking, LZWPacking_1) {
-    std::string sourceFileName = "../../tests/files/lzw_test.txt";
-    Packer* packer = new Packer(sourceFileName);
-    Unpacker* unpacker = new Unpacker(sourceFileName);
+    Packer* packer = new Packer(outputFileName);
+    Unpacker* unpacker = new Unpacker(outputFileName);
 
     LZWCoder* coder = new LZWCoder();
-    std::string source = "dad_a_dadad_dadda";
+    CharSequence source{'d', 'a', 'd', '_', 'a', '_', 'd', 'a', 'd', 'a', 'd', '_', 'd', 'a', 'd', 'd', 'a'};
     LZWCoder::Result result = coder->code(source);
 
     packer->writeLZWResult(result);

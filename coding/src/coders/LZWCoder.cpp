@@ -1,12 +1,20 @@
-#pragma once
-
-#include <iostream>
 #include <vector>
 #include <memory>
 #include <map>
 #include <set>
 
+#ifndef COMMON_DECLARATIONS
+#define COMMON_DECLARATIONS
+
+#include "../common/declarations.cpp"
+
+#endif
+
+/**
+Class which provides methods for coding/encoding data with LZW algorithm.
+*/
 class LZWCoder {
+
 public:
 
 
@@ -21,7 +29,6 @@ public:
     };
 
 
-    /* Prefix tree. */
     class Tree {
     public:
         Tree(): numberOfWords(0), root(new Node(-1, '\0')) {}
@@ -31,56 +38,64 @@ public:
     };
 
 
-    /// Represents the result of coding as vector with all codes and initial dictionary,
-    /// which contains only one-length unique characters of source string.
+    /** Represents the result of coding as vector with all codes and initial dictionary,
+     * which contains only one-length unique characters of source char sequence.
+     */
     struct Result {
 
         Result() {}
 
-        Result(std::map<int, std::string>& dictionary, std::vector<int>& codes) {
+        Result(std::map<int, CharSequence>& dictionary, std::vector<int>& codes) {
             this->codes = codes;
             this->dictionary = dictionary;
         }
 
-        std::map<int, std::string> dictionary;
+        std::map<int, CharSequence> dictionary;
         std::vector<int> codes;
     };
 
 
-    std::string encode(const Result& code) {
-        std::string encodedString = "";
-        std::map<int, std::string> dictionary = code.dictionary;
+    CharSequence encode(const Result& code) {
+        CharSequence encoded;
+        std::map<int, CharSequence > dictionary = code.dictionary;
 
         /// Presents the word (without last character and with its index in dictionary),
         /// which will be inserted on the next step, when it will be possible to determine the next character.
-        std::pair<std::string, int> notInitializedPair = std::make_pair("", -1);
-        std::pair<std::string, int> futureObject = notInitializedPair;
+        std::pair<CharSequence, int> notInitializedPair = std::make_pair(CharSequence{}, -1);
+        std::pair<CharSequence, int> futureObject = notInitializedPair;
 
         int lastIndex = static_cast<int>(dictionary.size()) + 1;
         for (int index: code.codes) {
 
             if (dictionary.find(index) != dictionary.end()) {
                 /// First case, when we have already found this word
-                if (futureObject != notInitializedPair)
-                    dictionary[futureObject.second] = futureObject.first + dictionary[index][0];
+                if (futureObject != notInitializedPair) {
+                    CharSequence insertion(futureObject.first);
+                    insertion.push_back(dictionary[index][0]);
+
+                    dictionary[futureObject.second] = insertion;
+                }
 
             } else {
                 /// Second case, when the word which we need to take is current `futureObject`
-                dictionary[futureObject.second] = futureObject.first + futureObject.first[0];
+                CharSequence insertion(futureObject.first);
+                insertion.push_back(futureObject.first[0]);
+
+                dictionary[futureObject.second] = insertion;
             }
 
-            std::string prefix = dictionary[index];
-            encodedString += prefix;
+            CharSequence prefix = dictionary[index];
+            encoded.insert(encoded.end(), prefix.begin(), prefix.end());
             futureObject = std::make_pair(dictionary[index], lastIndex++);
         }
 
 
-        return encodedString;
+        return encoded;
     }
 
 
-    Result code(const std::string& data) {
-        /// Fills dictionary with init values (strings with size 1 which represents characters).
+    Result code(const CharSequence& data) {
+        /// Fills dictionary with init values (char sequences with size 1 which represents characters).
         std::shared_ptr<Tree> dictionary = std::shared_ptr<Tree>(new Tree());
 
         /// Creates a default result, which will be filled with codes later.
@@ -99,11 +114,12 @@ public:
     }
 
 private:
-    /*
+
+    /**
      * Returns pair, where first number is the index of word which was found
      * and the second number is the length of this word.
      */
-    std::pair<int, int> searchAndInsertNextWord(const std::string& source, int position, std::shared_ptr<Tree> dictionary) {
+    std::pair<int, int> searchAndInsertNextWord(const CharSequence& source, int position, std::shared_ptr<Tree> dictionary) {
         int sourceSize = static_cast<int>(source.size());
         std::shared_ptr<Node> pointer = dictionary.get()->root;
 
@@ -123,11 +139,11 @@ private:
     }
 
 
-    /*
-     * Fills a dictionary with unique characters of given string.
+    /**
+     * Fills a dictionary with unique characters of given char sequence.
      * Characters are sorted in ascending order.
      */
-    void fillDictionary(const std::string& data, std::shared_ptr<Tree> dictionary, std::map<int, std::string>& map) {
+    void fillDictionary(const CharSequence& data, std::shared_ptr<Tree> dictionary, std::map<int, CharSequence>& map) {
         std::set<char> uniqueCharacters;
         for (char character: data)
             uniqueCharacters.insert(character);
@@ -136,7 +152,7 @@ private:
         std::set<char>::iterator ptr = uniqueCharacters.begin();
         for (int index = 1; ptr != uniqueCharacters.end(); ++index, ++ptr) {
             if (dictionary.get()->root.get()->next[*ptr] == nullptr) {
-                map[index] = *ptr;
+                map[index] = CharSequence{*ptr};
                 dictionary.get()->root.get()->next[*ptr] = std::shared_ptr<Node>(new Node(index, *ptr));
                 dictionary.get()->numberOfWords++;
             }

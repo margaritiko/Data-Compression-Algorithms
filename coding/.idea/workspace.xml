@@ -2,9 +2,7 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="coding" targetName="coders" />
       <config projectName="coding" targetName="coding" />
-      <config projectName="coding" targetName="packers" />
       <config projectName="coding" targetName="tests" />
     </generated>
   </component>
@@ -14,7 +12,79 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bc3b4176-1a44-4a0e-8276-9b5708f3ccb5" name="Default Changelist" comment="" />
+    <list default="true" id="bc3b4176-1a44-4a0e-8276-9b5708f3ccb5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/common/Converter.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/common/declarations.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/CSVWriter.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/Experimenter.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/Watch.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/.ipynb_checkpoints/analyze-checkpoint.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZ77_10_K.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZ77_10_TP.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZ77_10_TU.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZ77_20_K.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZ77_20_TP.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZ77_20_TU.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZ77_5_K.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZ77_5_TP.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZ77_5_TU.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZW_K.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZW_TP.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/LZW_TU.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/SF_K.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/SF_TP.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/SF_TU.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/Untitled.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/analyze.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/frequency.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/frequency.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/experiments/output/overall.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/coding.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lz77+cat.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lz77+cat.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lz77+cat.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lz77+cat.pptx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lz77+cat.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lz77+shapes.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lzw+cat.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lzw+cat.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lzw+cat.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lzw+cat.pptx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lzw+cat.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/lzw+shapes.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/sf+cat.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/sf+cat.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/sf+cat.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/sf+cat.pptx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/sf+cat.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-results/sf+shapes.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-sources/cat.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-sources/cat.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-sources/cat.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-sources/cat.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-sources/cat.pptx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-sources/cat.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/small-test-data-sources/shapes.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/special_coding.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/gtest/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/special_tests.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coders/LZ77Coder.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/coders/LZ77Coder.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coders/LZWCoder.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/coders/LZWCoder.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/coders/ShannonFanoCoder.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/coders/ShannonFanoCoder.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/Packer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/Packer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/Unpacker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/Unpacker.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/coders_test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/coders_test.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/lz77_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/lzw_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/shannon_fano_test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/packing_test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/packing_test.cpp" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,9 +102,15 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="ProjectId" id="1ZdggjZUKRn4OdM4i5NYcWEl48x" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.pathVariables" />
   </component>
   <component name="RecentsManager">
@@ -56,18 +132,14 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="CMake Application.tests">
-    <configuration name="coders" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="coding" TARGET_NAME="coders" CONFIG_NAME="Debug">
+  <component name="RunManager" selected="CMake Application.coding">
+    <configuration name="LZ77.LZ77PptxPacking_1" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" temporary="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="coding" TARGET_NAME="tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="coding" RUN_TARGET_NAME="tests" TEST_CLASS="LZ77" TEST_METHOD="LZ77PptxPacking_1" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="coding" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="file://$PROJECT_DIR$/src" PASS_PARENT_ENVS_2="true" PROJECT_NAME="coding" TARGET_NAME="coding" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="coding" RUN_TARGET_NAME="coding">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="packers" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="coding" TARGET_NAME="packers" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -78,11 +150,15 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="CMake Application.coders" />
       <item itemvalue="CMake Application.coding" />
-      <item itemvalue="CMake Application.packers" />
       <item itemvalue="CMake Application.tests" />
+      <item itemvalue="Google Test.LZ77.LZ77PptxPacking_1" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Google Test.LZ77.LZ77PptxPacking_1" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -97,10 +173,34 @@
       <workItem from="1585174501395" duration="28167000" />
       <workItem from="1585337541148" duration="1653000" />
       <workItem from="1585780305378" duration="886000" />
+      <workItem from="1585820931136" duration="24644000" />
+      <workItem from="1585939656466" duration="97000" />
+      <workItem from="1585951231987" duration="3320000" />
+      <workItem from="1586000534553" duration="44372000" />
+      <workItem from="1586132570110" duration="2208000" />
+      <workItem from="1586170827023" duration="180000" />
+      <workItem from="1586171375305" duration="873000" />
+      <workItem from="1586193245203" duration="7067000" />
+      <workItem from="1586217860562" duration="303000" />
+      <workItem from="1586218331745" duration="2000" />
+      <workItem from="1586219094289" duration="255000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
